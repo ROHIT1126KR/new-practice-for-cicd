@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Azure CI/CD Pipeline</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #0078d4;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        main {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px 25px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #0078d4;
+        }
+        code {
+            background: #eee;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Consolas, monospace;
+        }
+        pre {
+            background: #272727;
+            color: #f8f8f2;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 5px;
+        }
+        ul {
+            line-height: 1.6;
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Azure CI/CD Pipeline</h1>
+    <p>Basic overview of Continuous Integration and Continuous Deployment using Azure DevOps</p>
+</header>
+
+<main>
+    <section>
+        <h2>What is CI/CD?</h2>
+        <p>
+            <strong>CI (Continuous Integration)</strong> is the practice of frequently merging code changes into a shared repository
+            and automatically building and testing the project.
+        </p>
+        <p>
+            <strong>CD (Continuous Delivery/Deployment)</strong> is the practice of automatically deploying the application to a
+            target environment (such as staging or production) after it passes all checks.
+        </p>
+    </section>
+
+    <section>
+        <h2>Azure DevOps Pipeline Components</h2>
+        <ul>
+            <li><strong>Repository (Repo):</strong> Stores your application source code.</li>
+            <li><strong>Pipeline:</strong> Defines the steps to build, test, and deploy your app.</li>
+            <li><strong>Agent:</strong> A machine that runs the pipeline jobs.</li>
+            <li><strong>Artifacts:</strong> Build outputs that are passed to the release/deployment stage.</li>
+            <li><strong>Environment:</strong> Target like Dev, QA, or Production to deploy your app.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Sample Azure Pipeline (YAML)</h2>
+        <p>This is a very basic example of an Azure CI/CD pipeline for a web app:</p>
+
+        <pre><code># azure-pipelines.yml
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UseNode@1
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Use Node.js'
+
+- script: |
+    npm install
+    npm test
+    npm run build
+  displayName: 'Install, Test, Build'
+
+- task: CopyFiles@2
+  inputs:
+    contents: 'dist/**'
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Copy build files'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'drop'
+  displayName: 'Publish Artifacts'
+</code></pre>
+    </section>
+
+    <section>
+        <h2>Typical CI/CD Flow in Azure</h2>
+        <ol>
+            <li>Developer pushes code to the <strong>main</strong> branch on Azure Repos or GitHub.</li>
+            <li>The Azure pipeline is triggered automatically.</li>
+            <li>The code is built and tests are executed.</li>
+            <li>Build artifacts are created and published.</li>
+            <li>A release pipeline (or deployment stage) uses these artifacts to deploy the app to Azure (Web App, VM, Kubernetes, etc.).</li>
+        </ol>
+    </section>
+</main>
+
+<footer>
+    &copy; 2025 Azure CI/CD Demo Page
+</footer>
+
+</body>
+</html>
